@@ -395,7 +395,7 @@
           <span>
             从第
             <input id="startIndex" type="number" min="1" value="1" />
-            题开始（当前模块共 <span id="total-count">81</span> 题）
+            题开始（当前模块共 <span id="total-count">97</span> 题）
           </span>
           <button id="startBtn" class="primary-btn">开始练习</button>
         </div>
@@ -412,7 +412,7 @@
       <section id="question-area" class="question-area hidden">
         <div class="question-header">
           <div id="module-label" class="module-label">单选题</div>
-          <div id="question-index" class="question-index">第 1 题 / 共 81 题</div>
+          <div id="question-index" class="question-index">第 1 题 / 共 97 题</div>
         </div>
         <div id="question-text" class="question-text"></div>
         <div id="multi-tip" class="multi-tip"></div>
@@ -420,7 +420,8 @@
         <div id="feedback" class="feedback">请选择答案。</div>
         <div class="nav-bar">
           <button id="prevBtn" class="nav-btn" disabled>← 上一题</button>
-          <button id="confirmBtn" class="nav-btn hidden">确定答案 ✓</button>
+          <!-- 「确定答案」按钮仅在多选题模块显示 -->
+          <button id="confirmBtn" class="nav-btn" style="display:none;">确定答案 ✓</button>
           <button id="nextBtn" class="nav-btn">下一题 →</button>
         </div>
       </section>
@@ -434,7 +435,7 @@
   <script>
     // ======================= 题库原始文本 & 答案 Key =======================
 
-    // 单选题原始文本（81 题）
+    // 单选题原始文本（1-97）
     const rawSingleText = `
 1. 2020年，国家发展改革委印发《关于推进电力交易机构独立规范运行的实施意见》（发改体改[2020]234号），明确提出调度机构要做好（ ）交易组织实施、健全信息共享和安全保障机制等职责。
 A. 电力现货市场
@@ -991,9 +992,122 @@ B. 滚动撮合交易
 C. 挂牌交易
 D. 双边协商
 答案：A
+
+82. 根据《电力现货市场基本规则(试行)》，省级现货市场一般包括（ ）。
+A. 日前市场、实时市场
+B. 日前市场、日内市场、实时市场
+C. 日内市场、实时市场
+D. 日前市场、日内市场
+答案：B
+
+83. 根据《电力现货市场基本规则(试行)》，下列说法错误的是（ ）。
+A. 经营主体具有报价权和参与定价权。
+B. 电网企业代理购电用户在现货市场中不申报价格。
+C. 发用两侧均需报量报价参与现货市场。
+D. 机组在部分特殊情况下，不参与定价。
+答案：C
+
+84. 根据《电力现货市场基本规则(试行)》，下列说法错误的是（ ）。
+A. 现货市场应设定报价限价和出清限价。
+B. 报价限价不应超过出清限价范围。
+C. 二级价格限值一般低于正常交易的市场限价。
+D. 二级价格限值的上限可参考市场长期最高价水平确定。
+答案：D
+
+85. 根据《电力现货市场基本规则(试行)》，电力调度机构的权利和义务不包括（ ）。
+A. 组织电力现货交易，负责安全校核、市场监测和风险防控，按照调度规程实施电力调度，保障电网安全稳定运行。
+B. 按规则建设、运行和维护电力现货市场技术支持系统。
+C. 负责现货交易申报和信息发布。
+D. 按照信息披露和报送等有关规定披露和提供电网运行的相关信息，提供支撑市场化交易以及市场服务所需的相关数据。
+E. 合理安排电网运行方式，保障电力市场正常运行。
+答案：C
+
+86. 根据《电力现货市场基本规则(试行)》，下列说法不正确的是（ ）。
+A. 节点边际电价，指现货电能量交易中，在满足发电侧和输电安全等约束条件下，为满足某一电气节点增加单位负荷时导致的系统总电能供给成本的增量。
+B. 市场限价，一般分为报价限价和出清限价等。报价限价指允许经营主体申报的价格范围，出清限价指市场运行允许出现的价格范围。
+C. 实时市场，指运行日(D日)滚动进行的决定运行日(D日)未来数小时调度机组组合状态和发电计划的电能量市场。
+D. 安全校核分析方法包括静态安全分析、暂态稳定分析、动态稳定分析、电压稳定分析等。
+答案：C
+
+87. 根据《电力现货市场基本规则(试行)》，市场成员不包括（ ）。
+A. 经营主体
+B. 市场主体
+C. 电网企业
+D. 运营机构
+答案：B
+
+88. 根据《电力现货市场基本规则(试行)》，经营主体不包括（ ）。
+A. 发电企业
+B. 电力用户
+C. 新型主体
+D. 市场运营机构
+答案：D
+
+89. 根据《电力现货市场基本规则(试行)》，市场运营机构指（ ）。
+A. 能源主管部门和能源监管部门
+B. 电力调度机构和电力交易机构
+C. 电力交易机构
+D. 电网企业
+答案：B
+
+90. 根据《电力现货市场基本规则(试行)》，下列说法错误的是（ ）。
+A. 日内市场不是必须要开展的。
+B. 如不开展日前市场，可选择开展日前预出清，日前预出清结果不作为结算依据，仅向经营主体披露。
+C. 实时市场，不再改变机组组合。
+D. 实时市场出清，满足经营主体申报负荷需求。
+答案：D
+
+91. 根据《电力现货市场基本规则(试行)》，（ ）负责预测代理购电用户分时段用电量及居民、农业用电量和典型曲线，并通过技术支持系统发布。
+A. 调度机构
+B. 交易机构
+C. 电网企业
+D. 代理购电用户
+答案：C
+
+92. 根据《电力现货市场基本规则(试行)》，系统安全约束条件不包括（ ）。
+A. 输变电设备极限功率
+B. 发电机组(群)必开必停约束
+C. 发用电平衡约束
+D. 发电机组(群)出力上下限约束
+答案：C
+
+93. 全国统一电力市场体系初步建成时间（ ）。
+A. 2025年
+B. 2035年
+C. 2030年
+D. 2032年
+答案：A
+
+94. 根据《电力辅助服务市场基本规则》(发改能源规【2025】411号)，（ ）作为电力辅助服务采购方,负责提出满足系统安全运行要求的电力辅助服务需求。
+A. 电力调度机构
+B. 电网企业
+C. 电力交易机构
+D. 能源主管部门
+答案：A
+
+95. 根据《电力辅助服务管理办法》(国能发监管规【2021】61号)，辅助服务固定补偿方式确定补偿标准时应综合考虑电力辅助服务成本、性能表现及合理收益等因素,按（ ）的原则确定补偿力度。
+A. “谁提供、谁获利”
+B. “谁受益、谁承担”
+C. “补偿成本、合理收益”
+D. “市场规则确定”
+答案：C
+
+96. （ ）负责电力辅助服务的监督与管理。
+A. 国家能源局及其派出机构
+B. 当地电力主管部门
+C. 交易中心
+D. 电网企业调度机构
+答案：A
+
+97. 根据《电力辅助服务市场基本规则》(发改能源规【2025】411号)，电力辅助服务市场设立新品种时,市场运营机构应当依序开展（ ）。
+A. 模拟试运行、结算试运行、正式运行
+B. 模拟试运行、调电试运行、结算试运行、正式运行
+C. 调电试运行、结算试运行、正式运行
+D. 结算试运行、正式运行
+答案：A
 `;
 
-    // 多选题原始文本（36 题）
+    // 多选题原始文本（1-37）
     const rawMultiText = `
 1. 从国际经验来看，在日前申报结束后，电力调度机构根据机组申报信息，综合考虑（ ）等因素，采用SCUC和SCED出清算法进行优化计算并通过日前安全校核后，编制形成日前预调度计划。
 A. 系统负荷预测变化
@@ -1258,9 +1372,17 @@ B. 售电公司批发均价
 C. 发电侧节点电价
 D. 中长期结算参考点现货价格
 答案：AB
+
+37. 根据《电力现货市场基本规则(试行)》，市场限价设定应（ ）。
+A. 考虑经济社会承受能力
+B. 有利于市场发现价格
+C. 激励投资，引导用户侧削峰填谷
+D. 提高电力保供能力
+E. 预防范市场运行风险
+答案：ABCDE
 `;
 
-    // 判断题原始文本（49 题）
+    // 判断题原始文本（1-52）
     const rawJudgeText = `
 1. 保障电力系统安全稳定运行是全体市场成员共同利益之所在。从保证电网安全运行的角度考虑，调度计划包含电力市场交易结果，但最终下发的计划一定是依据当前电网运行条件。
 答案：正确
@@ -1408,17 +1530,26 @@ D. 中长期结算参考点现货价格
 
 49. 为安排次日（或未来24h）发用电计划而组织的日前电力交易市场，为实现日内发用电计划滚动调整而组织的日内电力交易市场以及为保证电力供需的即时平衡而组织的中长期电力交易市场，通常被视为电力现货市场。
 答案：错误
+
+50. 根据《电力现货市场基本规则(试行)》，当电网存在输电阻塞时，按阻塞断面将市场分为几个不同的分区，并以分区内节点电价加权均价作为该分区出清价格，即分区边际电价。
+答案：错误
+
+51. 根据《电力现货市场基本规则(试行)》，节点边际电价包含电能量分量和阻塞分量。
+答案：正确
+
+52. 根据《电力现货市场基本规则(试行)》，电力交易机构的权利和义务包括负责中长期交易组织及合同管理，负责现货交易申报和信息发布，提供电力交易结算依据及相关服务。
+答案：正确
 `;
 
-    // 答案 key（单选 / 多选 / 判断）
+    // ========= 答案 key =========
     const singleKeyString =
-      "1A 2D 3A 4A 5B 6A 7D 8A 9D 10B 11C 12B 13A 14A 15B 16A 17B 18A 19B 20A 21B 22A 23B 24B 25B 26C 27D 28B 29C 30B 31D 32D 33C 34C 35B 36C 37A 38B 39B 40D 41C 42C 43C 44C 45B 46B 47B 48C 49C 50B 51B 52B 53B 54B 55B 56B 57C 58B 59C 60B 61C 62D 63B 64D 65A 66B 67C 68C 69A 70B 71A 72B 73D 74B 75C 76B 77B 78B 79A 80C 81A";
+      "1A 2D 3A 4A 5B 6A 7D 8A 9D 10B 11C 12B 13A 14A 15B 16A 17B 18A 19B 20A 21B 22A 23B 24B 25B 26C 27D 28B 29C 30B 31D 32D 33C 34C 35B 36C 37A 38B 39B 40D 41C 42C 43C 44C 45B 46B 47B 48C 49C 50B 51B 52B 53B 54B 55B 56B 57C 58B 59C 60B 61C 62D 63B 64D 65A 66B 67C 68C 69A 70B 71A 72B 73D 74B 75C 76B 77B 78B 79A 80C 81A 82B 83C 84D 85C 86C 87B 88D 89B 90D 91C 92C 93A 94A 95C 96A 97A";
 
     const multiKeyString =
-      "1ABC 2ABCDEF 3ACD 4BE 5CDE 6BC 7BD 8ABC 9AB 10ABCD 11ABC 12ABC 13ABCE 14ABC 15ABCDE 16ABCD 17AB 18AB 19ABCD 20ABC 21ABCD 22ABCD 23ABCDE 24ABC 25ABCD 26ABCD 27ABCDE 28ABCDE 29AB 30ABC 31ABCD 32ABC 33ABCDEF 34ABCD 35ABC 36AB";
+      "1ABC 2ABCDEF 3ACD 4BE 5CDE 6BC 7BD 8ABC 9AB 10ABCD 11ABC 12ABC 13ABCE 14ABC 15ABCDE 16ABCD 17AB 18AB 19ABCD 20ABC 21ABCD 22ABCD 23ABCDE 24ABC 25ABCD 26ABCD 27ABCDE 28ABCDE 29AB 30ABC 31ABCD 32ABC 33ABCDEF 34ABCD 35ABC 36AB 37ABCDE";
 
     const judgeKeyString =
-      "1T 2F 3T 4T 5T 6F 7F 8T 9T 10F 11F 12T 13T 14T 15F 16T 17F 18T 19T 20T 21T 22T 23F 24T 25F 26F 27T 28T 29T 30F 31F 32T 33T 34T 35F 36T 37F 38F 39T 40T 41T 42T 43T 44T 45T 46T 47T 48T 49F";
+      "1T 2F 3T 4T 5T 6F 7F 8T 9T 10F 11F 12T 13T 14T 15F 16T 17F 18T 19T 20T 21T 22T 23F 24T 25F 26F 27T 28T 29T 30F 31F 32T 33T 34T 35F 36T 37F 38F 39T 40T 41T 42F 43T 44T 45T 46T 47T 48T 49F 50F 51T 52T";
 
     // ======================= 解析工具函数 =======================
 
@@ -1707,11 +1838,11 @@ D. 中长期结算参考点现货价格
       prevBtn.disabled = currentIndex === 0;
       nextBtn.disabled = currentIndex === cfg.questions.length - 1;
 
-      // 多选题才显示“确定答案”按钮
+      // 「确定答案」按钮仅在多选题模块显示
       if (currentModuleId === "multi") {
-        confirmBtn.classList.remove("hidden");
+        confirmBtn.style.display = "inline-flex";
       } else {
-        confirmBtn.classList.add("hidden");
+        confirmBtn.style.display = "none";
       }
 
       bindOptionEvents();
@@ -1758,7 +1889,6 @@ D. 中长期结算参考点现货价格
     // 多选题：点击选项只负责“选择/取消”，不判题
     function handleMultiChoice(letter) {
       const cfg = modules[currentModuleId];
-      const q = cfg.questions[currentIndex];
       const optionButtons = document.querySelectorAll(".option-btn");
       const feedback = document.getElementById("feedback");
 
@@ -1913,6 +2043,14 @@ D. 中长期结算参考点现货价格
       const barInner = document.getElementById("progress-bar-inner");
       progressText.textContent = `已选择模块：${modules[id].name}。点击「开始练习」进入答题。`;
       barInner.style.width = "0%";
+
+      // 切换模块时：「确定答案」按钮只在多选题模块显示
+      const confirmBtn = document.getElementById("confirmBtn");
+      if (id === "multi") {
+        confirmBtn.style.display = "inline-flex";
+      } else {
+        confirmBtn.style.display = "none";
+      }
     }
 
     function handleStart() {
