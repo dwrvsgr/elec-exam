@@ -1,0 +1,1954 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <title>电力市场考试练习（离线版）</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    :root {
+      --bg: #f3f4f8;
+      --card-bg: #ffffff;
+      --primary: #2563eb;
+      --primary-soft: rgba(37,99,235,0.08);
+      --text-main: #111827;
+      --text-sub: #6b7280;
+      --border-soft: #e5e7eb;
+      --correct: #16a34a;
+      --correct-bg: #ecfdf3;
+      --wrong: #dc2626;
+      --wrong-bg: #fef2f2;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+        "Helvetica Neue", Arial, "Noto Sans SC", "PingFang SC", sans-serif;
+      background: radial-gradient(circle at top left, #e0ecff 0, #f3f4f8 50%, #f9fafb 100%);
+      color: var(--text-main);
+    }
+
+    .app {
+      max-width: 980px;
+      margin: 0 auto;
+      padding: 24px 16px 40px;
+    }
+
+    .card {
+      background: var(--card-bg);
+      border-radius: 18px;
+      box-shadow: 0 18px 45px rgba(15, 23, 42, 0.08);
+      padding: 22px 20px 26px;
+    }
+
+    header {
+      margin-bottom: 16px;
+    }
+
+    header h1 {
+      margin: 0 0 4px;
+      font-size: 24px;
+      font-weight: 650;
+      letter-spacing: 0.02em;
+    }
+
+    header p {
+      margin: 0;
+      font-size: 13px;
+      color: var(--text-sub);
+    }
+
+    .control-panel {
+      margin-bottom: 18px;
+      border-bottom: 1px solid #f3f4f6;
+      padding-bottom: 14px;
+    }
+
+    .module-select {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 10px;
+    }
+
+    .label {
+      font-size: 13px;
+      color: var(--text-sub);
+      margin-right: 4px;
+      white-space: nowrap;
+    }
+
+    .module-btn {
+      border-radius: 999px;
+      border: 1px solid var(--border-soft);
+      background: #f9fafb;
+      padding: 4px 12px;
+      font-size: 13px;
+      cursor: pointer;
+      color: var(--text-sub);
+      transition: all 0.18s ease;
+    }
+
+    .module-btn:hover {
+      border-color: #c7d2fe;
+      background: #eef2ff;
+      color: var(--primary);
+    }
+
+    .module-btn.active {
+      border-color: var(--primary);
+      background: var(--primary-soft);
+      color: var(--primary);
+      font-weight: 600;
+    }
+
+    .start-controls {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 8px;
+      font-size: 13px;
+      color: var(--text-sub);
+      margin-bottom: 10px;
+    }
+
+    .start-controls input[type="number"] {
+      width: 64px;
+      padding: 3px 6px;
+      border-radius: 8px;
+      border: 1px solid var(--border-soft);
+      font-size: 13px;
+      outline: none;
+      transition: border-color 0.16s ease, box-shadow 0.16s ease;
+    }
+
+    .start-controls input[type="number"]:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 1px rgba(37, 99, 235, 0.2);
+    }
+
+    .primary-btn {
+      border-radius: 999px;
+      border: none;
+      background: linear-gradient(135deg, #2563eb, #4f46e5);
+      color: #ffffff;
+      padding: 6px 16px;
+      font-size: 13px;
+      cursor: pointer;
+      font-weight: 500;
+      box-shadow: 0 8px 18px rgba(37, 99, 235, 0.35);
+      transition: transform 0.12s ease, box-shadow 0.12s ease, filter 0.12s ease;
+      white-space: nowrap;
+    }
+
+    .primary-btn:hover {
+      transform: translateY(-0.5px);
+      filter: brightness(1.05);
+      box-shadow: 0 10px 22px rgba(37, 99, 235, 0.4);
+    }
+
+    .primary-btn:active {
+      transform: translateY(0);
+      box-shadow: 0 6px 14px rgba(37, 99, 235, 0.35);
+    }
+
+    .progress-wrapper {
+      margin-top: 4px;
+    }
+
+    .progress-text {
+      font-size: 12px;
+      color: var(--text-sub);
+      margin-bottom: 4px;
+    }
+
+    .progress-bar {
+      width: 100%;
+      height: 6px;
+      border-radius: 999px;
+      background: #e5e7eb;
+      overflow: hidden;
+    }
+
+    .progress-bar-inner {
+      height: 100%;
+      width: 0%;
+      border-radius: 999px;
+      background: linear-gradient(90deg, #4f46e5, #2563eb);
+      transition: width 0.25s ease;
+    }
+
+    .question-area {
+      margin-top: 14px;
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    .question-header {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      gap: 8px;
+      margin-bottom: 10px;
+      align-items: baseline;
+    }
+
+    .module-label {
+      font-size: 13px;
+      color: var(--primary);
+      padding: 2px 8px;
+      border-radius: 999px;
+      background: #eef2ff;
+    }
+
+    .question-index {
+      font-size: 12px;
+      color: var(--text-sub);
+    }
+
+    .question-text {
+      font-size: 14px;
+      line-height: 1.6;
+      margin-bottom: 8px;
+    }
+
+    .multi-tip {
+      font-size: 12px;
+      color: #9ca3af;
+      margin-bottom: 10px;
+    }
+
+    .options {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .option-btn {
+      width: 100%;
+      text-align: left;
+      border-radius: 12px;
+      border: 1px solid var(--border-soft);
+      background: #f9fafb;
+      padding: 8px 10px;
+      font-size: 13px;
+      cursor: pointer;
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+      color: var(--text-main);
+      transition: background 0.12s ease, border-color 0.12s ease,
+        box-shadow 0.12s ease, transform 0.06s ease, color 0.12s ease;
+    }
+
+    .option-btn .option-letter {
+      flex-shrink: 0;
+      width: 22px;
+      height: 22px;
+      border-radius: 999px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      font-weight: 600;
+      background: #e5e7eb;
+      color: #374151;
+    }
+
+    .option-btn .option-text {
+      flex: 1;
+    }
+
+    .option-btn:hover {
+      border-color: #d1d5db;
+      background: #f3f4ff;
+      box-shadow: 0 4px 10px rgba(148, 163, 184, 0.25);
+      transform: translateY(-0.5px);
+    }
+
+    .option-btn.selected {
+      border-color: #60a5fa;
+      box-shadow: 0 0 0 1px rgba(37, 99, 235, 0.3);
+    }
+
+    .option-btn.correct {
+      border-color: #16a34a;
+      background: var(--correct-bg);
+      color: #166534;
+    }
+
+    .option-btn.correct .option-letter {
+      background: #bbf7d0;
+      color: #166534;
+    }
+
+    .option-btn.wrong {
+      border-color: #dc2626;
+      background: var(--wrong-bg);
+      color: #991b1b;
+    }
+
+    .option-btn.wrong .option-letter {
+      background: #fecaca;
+      color: #991b1b;
+    }
+
+    .feedback {
+      margin-top: 12px;
+      font-size: 13px;
+      min-height: 20px;
+      display: flex;
+      align-items: center;
+    }
+
+    .feedback-correct {
+      color: var(--correct);
+    }
+
+    .feedback-wrong {
+      color: var(--wrong);
+    }
+
+    .nav-bar {
+      margin-top: 14px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .nav-btn {
+      border-radius: 999px;
+      border: 1px solid var(--border-soft);
+      background: #f9fafb;
+      padding: 5px 12px;
+      font-size: 13px;
+      cursor: pointer;
+      color: #374151;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      transition: background 0.12s ease, border-color 0.12s ease, color 0.12s ease;
+    }
+
+    .nav-btn:hover:not(:disabled) {
+      background: #eef2ff;
+      border-color: #c7d2fe;
+      color: var(--primary);
+    }
+
+    .nav-btn:disabled {
+      opacity: 0.45;
+      cursor: default;
+    }
+
+    footer {
+      margin-top: 16px;
+      font-size: 11px;
+      color: #9ca3af;
+      text-align: right;
+    }
+
+    @media (max-width: 640px) {
+      .card {
+        padding: 18px 14px 22px;
+        border-radius: 14px;
+      }
+
+      header h1 {
+        font-size: 20px;
+      }
+
+      .question-text {
+        font-size: 13px;
+      }
+
+      .option-btn {
+        padding: 7px 9px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <div class="card">
+      <header>
+        <h1>电力市场考试练习 · 离线版</h1>
+        <p>支持单选 / 多选 / 判断模块，实时判题，高亮对错，显示练习进度。</p>
+      </header>
+
+      <section class="control-panel">
+        <div class="module-select">
+          <span class="label">练习模块：</span>
+          <button class="module-btn active" data-module="single">单选题</button>
+          <button class="module-btn" data-module="multi">多选题</button>
+          <button class="module-btn" data-module="judge">判断题</button>
+        </div>
+        <div class="start-controls">
+          <span>
+            从第
+            <input id="startIndex" type="number" min="1" value="1" />
+            题开始（当前模块共 <span id="total-count">81</span> 题）
+          </span>
+          <button id="startBtn" class="primary-btn">开始练习</button>
+        </div>
+        <div class="progress-wrapper">
+          <div id="progress-text" class="progress-text">
+            已选择模块：单选题。点击「开始练习」进入答题。
+          </div>
+          <div class="progress-bar">
+            <div id="progress-bar-inner" class="progress-bar-inner"></div>
+          </div>
+        </div>
+      </section>
+
+      <section id="question-area" class="question-area hidden">
+        <div class="question-header">
+          <div id="module-label" class="module-label">单选题</div>
+          <div id="question-index" class="question-index">第 1 题 / 共 81 题</div>
+        </div>
+        <div id="question-text" class="question-text"></div>
+        <div id="multi-tip" class="multi-tip"></div>
+        <div id="options" class="options"></div>
+        <div id="feedback" class="feedback">请选择答案。</div>
+        <div class="nav-bar">
+          <button id="prevBtn" class="nav-btn" disabled>← 上一题</button>
+          <button id="confirmBtn" class="nav-btn hidden">确定答案 ✓</button>
+          <button id="nextBtn" class="nav-btn">下一题 →</button>
+        </div>
+      </section>
+
+      <footer>
+        本页面完全离线运行，可直接保存为 HTML 文件本地使用。
+      </footer>
+    </div>
+  </div>
+
+  <script>
+    // ======================= 题库原始文本 & 答案 Key =======================
+
+    // 单选题原始文本（81 题）
+    const rawSingleText = `
+1. 2020年，国家发展改革委印发《关于推进电力交易机构独立规范运行的实施意见》（发改体改[2020]234号），明确提出调度机构要做好（ ）交易组织实施、健全信息共享和安全保障机制等职责。
+A. 电力现货市场
+B. 电力中长期市场
+C. 电力市场
+答案：A
+
+2. 比照商品市场的一般定义，广义的电力市场泛指电力流通交换的领域，狭义的电力市场是指现代竞争性的电力市场，建立电力市场旨在通过开放、竞争等市场手段实现电力能源资源的（ ）。
+A. 能效提升
+B. 成本降低
+C. 无限制交易
+D. 优化配置
+答案：D
+
+3. 电力市场分为（ ）与零售市场。一般而言，（ ）可以按市场性质、交易品种、交易时间、竞争模式等维度进一步细分。
+A. 批发市场
+B. 集中市场
+C. 分散市场
+答案：A
+
+4. 电力市场中的双边合约包括实物合约和（ ）两大类。
+A. 金融合约
+B. 中长期合约
+C. 短期合约
+D. 长期合约
+答案：A
+
+5. 电力现货市场的运营组织，从市场组织来看，（ ）负责组织现货市场出清及执行交易结果。
+A. 交易机构
+B. 调度机构
+C. 发电企业
+D. 售电公司
+E. 电力用户
+答案：B
+
+6. 电力现货市场的运营组织，从市场组织来看，（ ）负责信息发布、成员申报、出具结算依据等工作。
+A. 交易机构
+B. 调度机构
+C. 发电企业
+D. 售电公司
+E. 电力用户
+答案：A
+
+7. 发电厂商以集中竞价形式参与电能现货市场，具体有：以报量报价形式参与现货市场，由调度交易机构集中出清决定发电厂商的发电计划，以市场出清量价来结算，该类机组有成为（ ）的可能性，有可能为市场定价。
+A. 火电机组
+B. 自计划机组
+C. 调峰机组
+D. 边际机组
+答案：D
+
+8. 分散式市场中，发电厂商利用（ ）、日前及日内市场投标、实时平衡市场调增、调减，平衡机制投标来实现对自己发电计划曲线的决策和修正。在日前阶段，发电厂商依据已签订的双边合约，分解发用电曲线、实施自我平衡，并向调度机构提交次日的发用电曲线。
+A. 中长期实物合约
+B. 对冲合约
+C. 远期期货合约
+D. 中长期金融合约
+答案：A
+
+9. 假设某企业研发一套产品，研发过程中购入100万元设备（固定成本），研发人员工资20万元，购买各类材料50万元，如果研发失败或者产品过时，该企业关停该产品线，则沉没成本为（ ）万元。
+A. 100
+B. 20
+C. 50
+D. 170
+答案：D
+
+10. 目前通行的电力现货交易结算价格形成机制有两种：其中一种是按各市场主体的报价结算，其电价通常被称为（ ）。
+A. 报价
+B. 差别电价
+C. 边际出清价格
+D. 统一价格结算
+答案：B
+
+11. 市场力指市场成员对市场价格产生影响的能力，是某些市场成员通过改变市场价格水平使之偏离竞争价格水平而获利的能力。对用电侧而言，利用市场势力获取超额利润的常见方法为（ ）。
+A. 限制供给
+B. 提高投标价格
+C. 降低投标价格
+答案：C
+
+12. 完全竞争的电力市场下，选择按（ ）是市场各参与者的最佳竞价策略。由于电力工业的特殊性，电力市场更接近于寡头竞争市场，不按边际成本报价才是更为普遍的现象。
+A. 平均成本报价
+B. 边际成本报价
+C. 剔除空载成本的平均成本报价
+D. 发电成本
+答案：B
+
+13. 为应对可再生能源的波动性，现货市场可以衔接（ ）市场和容量市场来协调可再生能源与传统火电，为提供可靠供电的火电提供正确价格信号。
+A. 调峰辅助服务
+B. 金融服务
+C. 备用辅助服务
+答案：A
+
+14. 现货市场改革中，可采用保障利用小时内的可再生能源发电执行（ ），超出保障利用小时数的可再生能源发电开展市场化交易的机制。
+A. 政府定价
+B. 协商定价
+C. 竞价定价
+答案：A
+
+15. 现货市场价格机制的选择上，对于电网阻塞线路多、阻塞成本高的地区，可选择（ ）机制。
+A. 分区边际电价
+B. 节点边际电价
+C. 系统边际电价
+答案：B
+
+16. 现货市场价格是中长期市场交易的（ ）。
+A. 价格参考
+B. 价格风险
+C. 套利
+答案：A
+
+17. 电能量中长期市场是规避现货市场（ ）的重要途径。
+A. 交付风险
+B. 价格风险
+C. 阻塞风险
+答案：B
+
+18. 现货市场某交易时段中，若必开机组仅中标必开最小出力，该时段内该台必开机组（ ）。
+A. 不参与市场定价
+B. 参与市场定价
+C. 可选择参与或不参与市场定价
+答案：A
+
+19. 现货市场某交易时段中，若必开机组的必开最小出力之上的发电能力中标，该时段内该台必开机组（ ）。
+A. 不参与市场定价
+B. 参与市场定价
+C. 可选择参与或不参与市场定价
+答案：B
+
+20. 用户侧现货结算价格由（ ）结算价格和由用户侧承担的各项市场运行费用构成。
+A. 电能量
+B. 输配电价
+C. 政府性基金及附加
+D. 辅助服务费用
+答案：A
+
+21. 运行日内，若必开机组当天的总发电收益低于核定的总发电成本，按照（ ）对必开机组进行补偿。
+A. 实际发电成本
+B. 核定的总发电成本
+C. 边际成本
+D. 价差
+答案：B
+
+22. 在电力市场初期，搁浅成本回收方式通常包括电价费回收机制、附加费回收机制、证券化机制和（ ）回收机制。
+A. 容量市场
+B. 尖峰电价
+C. 成本补偿
+答案：A
+
+23. 在电力市场化改革和补贴退坡大背景下，合理利用小时数出台是必然的。未来可再生能源的超额收益更多来自参与市场竞争，这对可再生能源发电（ ）提出了更高的要求。
+A. 交易策略
+B. 预测准确率
+C. 市场竞争力
+答案：B
+
+24. 在确保系统功率平衡的前提下，为了防止系统负荷预测偏差以及各种实际运行事故带来的系统功率不平衡波动风险，整个系统一般需要留有一定的（ ）容量。
+A. 调频
+B. 备用
+C. 调峰
+答案：B
+
+25. 以下哪个场景下，一般主管部门会发布省份的交易方案或工作方案？（ ）。
+A. 月度交易开始前
+B. 现货连续试运行开始前
+C. 现货市场出现价格异常时
+D. 以上都不是
+答案：B
+
+26. 以下哪个不是现货规则中一定包含的规则参数？（ ）。
+A. 现货申报价格上下限
+B. 现货出清价格上下限
+C. 现货结算价格上下限
+D. 现货出清时段划分
+答案：C
+
+27. 以下哪项不是中长期偏差考核的形式？（ ）。
+A. 月度总量考核
+B. 分日分时考核
+C. 分时考核
+D. 度总量考核
+答案：D
+
+28. 同一省份中，发电侧与售电侧主体在以下哪项规则参数上一般不一致？（ ）。
+A. 现货出清价格上下限
+B. 现货结算参考点
+C. 结算方式
+D. 能量块申报限价
+答案：B
+
+29. 现行的《电力现货市场基本规则（试行）》于哪一年开始施行？（ ）。
+A. 2021年
+B. 2022年
+C. 2023年
+D. 2025年
+答案：C
+
+30. 现货市场一般采用哪种结算模式？（ ）。
+A. 日清日结
+B. 日清月结
+C. 月清月结
+D. 月清年结
+答案：B
+
+31. 中长期合同作价差结算时，价差部分为合同电价减去以下哪个电价？（ ）。
+A. 日前电价
+B. 实时电价
+C. 全市场平均现货价格
+D. 中长期结算参考点的现货价格
+答案：D
+
+32. 以下哪个结算科目一定不会在日结算单中体现？（ ）。
+A. 能量块电费
+B. 日前偏差考核费用
+C. 中长期合约电费
+D. 中长期偏差考核费用
+答案：D
+
+33. 关于绿电结算以下哪一个阐述是错误的？（ ）。
+A. 绿电结算费用包含电能量费用与环境权益费用
+B. 环境权益费用一般会设置上下限
+C. 环境权益费用会包含在电能量费用当中
+D. 绿电电能量部分结算与一般电能量结算方式相同
+答案：C
+
+34. 售电公司现货日结算计算不依赖以下哪一个环节？（ ）。
+A. 合约电量分时拆解
+B. 客户计量电量获取
+C. 现货市场均价披露
+D. 现货出清价格披露
+答案：C
+
+35. 中长期结算参考点价格可以是以下哪类价格？（ ）。
+A. 节点现货价格
+B. 统一结算点实时价格
+C. 市场月度均价
+D. 售电公司批发交易均价
+答案：B
+
+36. 以下哪一类用户不是售电公司目标客群？（ ）。
+A. 代理购电用户
+B. 35kv以上工商业用户
+C. 带屋顶光伏的居民用户
+D. 带屋顶光伏的工商业用户
+答案：C
+
+37. 以下哪一项不在售电公司注册条件要求范围内？（ ）。
+A. 资产总额不得低于2亿元人民币
+B. 拥有10名及以上具有劳动关系的全职专业人员
+C. 至少拥有1名高级职称和3名中级职称的专业管理人员
+D. 具有能够满足参加市场交易的报价、信息报送、合同签订、客户服务等功能的电力市场技术支持系统和客户服务平台
+答案：A
+
+38. 零售交易周期以什么为基本单位？（ ）。
+A. 年
+B. 月
+C. 旬
+D. 日
+答案：B
+
+39. 售电公司与客户进行购售电进行哪项费用的结算？（ ）。
+A. 输配电费
+B. 上网电费
+C. 平段电费
+D. 峰谷电费
+答案：B
+
+40. 零售套餐不包含以下哪种套餐形式？（ ）。
+A. 固定价格类套餐
+B. 价格联动套餐
+C. 组合套餐
+D. 批零价差套餐
+答案：D
+
+41. 零售合同一般通过什么途径正式签订？（ ）。
+A. 电力交易中心
+B. 居间人线下
+C. 线上零售平台
+D. 售电公司网站
+答案：C
+
+42. 当电价降低5%，电力需求增加2%时，该类电力需求的价格弹性属于：（ ）。
+A. 富有弹性
+B. 单位弹性
+C. 缺乏弹性
+D. 完全弹性
+答案：C
+
+43. 火电机组平均成本呈U形曲线的主要原因是：（ ）。
+A. 固定成本与变动成本均随出力下降
+B. 固定成本与变动成本均随出力上升
+C. 固定成本随出力上升被摊薄而变动成本在高负荷条件下升高
+D. 边际成本始终等于平均成本
+答案：C
+
+44. 下列哪种行为最能体现市场力的存在？（ ）。
+A. 企业按边际成本报价
+B. 企业被动响应电价
+C. 企业通过减少出力推高市场价格并获利
+D. 用户负荷出现季节性变化
+答案：C
+
+45. 在边际定价的电力现货市场中，“社会总剩余最大化”通常意味着：（ ）。
+A. 电价等于平均成本
+B. 电价由边际机组的成本决定，资源按成本排序供给
+C. 所有机组平等获得固定收益
+D. 电价保持稳定不波动
+答案：B
+
+46. 在不同交易方式中，下列哪项体现了“批发竞争”？（ ）。
+A. 仅允许电厂之间竞争，不引入其他主体
+B. 在发电竞争基础上，引入大用户和配售电公司参与交易
+C. 引入售电商，用户可选择不同售电商购电
+D. 电网公司参与电能量批发竞争
+答案：B
+
+47. 导致近年来新能源消纳压力持续上升的最核心原因是：（ ）。
+A. 新能源发电成本上升
+B. 发电量增速显著高于用电量增速
+C. 煤电利用小时大幅提升
+D. 电价上涨导致需求减少
+答案：B
+
+48. 国家在《行动计划》中首次提出以清洁能源“利用率”为主要评价指标，其目的主要是：（ ）。
+A. 限制新能源增长速度
+B. 将发电企业分类管理
+C. 强调“消得掉”比“建得多”更重要
+D. 鼓励新能源价格市场化
+答案：C
+
+49. 2024年《关于做好新能源消纳工作···》中适度将利用率目标从95%放宽至不低于90%，其主要考虑是：（ ）。
+A. 收缩新能源发展规模
+B. 给火电让出更多出力
+C. 缓解“三北”等资源富集区消纳压力
+D. 鼓励新能源退出市场
+答案：C
+
+50. 以下哪项最能解释“三北地区”成为新能源消纳矛盾最突出的区域？（ ）。
+A. 当地用电负荷远高于全国平均
+B. 新能源资源禀赋强、装机集中、外送通道受限
+C. 火电机组数量较少
+D. 当地新能源成本偏高
+答案：B
+
+51. 下列哪类措施最有助于从系统层面提升新能源消纳能力？（ ）。
+A. 大规模增加煤电装机
+B. 推动跨省跨区交易与源网荷储协同建设
+C. 降低新能源并网标准
+D. 全部依靠本地负荷吸纳
+答案：B
+
+52. 在电力市场中，当某条输电线路发生阻塞时，最直接的市场后果是：（ ）。
+A. 全网电价统一
+B. 节点间出现价格差
+C. 所有机组必须降出力
+D. 边际机组转为新能源机组
+答案：B
+
+53. 节点电价（LMP）通常由以下哪三部分构成？（ ）。
+A. 能量成本 + 辅助服务成本 + 输电损耗
+B. 能量成本 + 输电拥塞成本 + 输电损耗成本
+C. 输电功率成本 + 系统惯量成本 + 辅助成本
+D. 输电权价格 + 电源边际成本 + 烃耗成本
+答案：B
+
+54. 在电网存在长期结构性阻塞时，金融输电权（FTR）的价值主要来源于：（ ）。
+A. 输电企业的投资回报
+B. 不同节点间的LMP价差（节点间拥堵租金）
+C. 机组启停费用差
+D. 辅助服务价格上升
+答案：B
+
+55. 阻塞盈余产生的根本原因是：（ ）。
+A. 电网中所有节点电价完全相同
+B. 发电侧和用电侧采用不同电价结算
+C. 输电线路完全不产生价差
+D. 中长期交易电量太少
+答案：B
+
+56. 关于输电权（Transmission Rights），下列哪项描述最符合基本概念？（ ）。
+A. 输电权是发电企业对输电线路的所有权
+B. 输电权是一种在电网容量有限时保障电量跨区输送的权利
+C. 拥有输电权的企业可以决定电网调度方式
+D. 输电权可以无限制增加电网输送能力
+答案：B
+
+57. 在电力市场中，下列哪种情形最有可能导致发电企业的市场力显著增强？（ ）。
+A. 用户负荷具备较高弹性
+B. 可用备用容量充足
+C. 系统负荷高、可调节电源集中在少数企业
+D. 新能源出力高、火电边际作用降低
+答案：C
+
+58. 在完整的电力市场体系中，中长期合同市场的核心功能是：（ ）。
+A. 发现实时边际成本
+B. 对冲价格风险、提供价格锚
+C. 进行独立辅助服务交易
+D. 进行跨省区实时电量交换
+答案：B
+
+59. 在电力现货市场中，下列哪种情况最容易造成实时电价剧烈波动？（ ）。
+A. 火电平均成本上升
+B. 分时电价执行
+C. 边际机组可用容量接近系统负荷
+D. 大量新能源并网
+答案：C
+
+60. 在中长期合同、日前市场与实时市场组合体系中，日前市场的主要功能是：（ ）。
+A. 发挥辅助服务作用
+B. 对冲长期电量偏差
+C. 提供机组可用性信息、优化调度计划
+D. 平衡电网实时偏差
+答案：B
+
+61. 在电力市场体系中，如果辅助服务市场机制不完善，最可能导致以下哪一类问题？（ ）。
+A. 边际成本无法准确计算
+B. 新能源消纳能力提升
+C. 调节资源稀缺、电价波动放大
+D. 输电价格过高
+答案：C
+
+62. （ ）将电能量与调频、备用等同时段交易获取的辅助服务放在统一的数学模型中集中优化，求解得到满足系统安全运行约束的最经济的出清结果。
+A. 独立出清模式
+B. 边际出清模式
+C. 高低匹配出清模式
+D. 联合出清模式
+答案：D
+
+63. 一般来说，一昼夜之内，会出现（ ）尖峰负荷，深夜则为用电最少的低谷负荷（仅为尖峰负荷的50%～70%）时间。
+A. 一次
+B. 两次
+C. 三次
+D. 四次
+答案：B
+
+64. 完全竞争的电力市场下，选择按（ ）报价是市场各参与者的最佳竞价策略。
+A. 平均总成本
+B. 平均固定成本
+C. 平均可变成本
+D. 边际成本
+答案：D
+
+65. 系统边际电价模式适用于（ ）的地区。
+A. 阻塞较少
+B. 阻塞较多
+C. 无阻塞
+D. 断面多
+答案：A
+
+66. 在日前市场中，若发电机组逾时未申报报价信息，一般采取：（ ）。
+A. 不参与市场出清
+B. 以缺省信息参与市场出清
+C. 同类型报价信息参与市场出清
+D. 以上都不对
+答案：B
+
+67. 在用户侧参与市场结算的规则体系中，采用以下哪种电价：（ ）。
+A. 节点电价
+B. 系统统一电价
+C. 统一结算电价
+D. 市场出清电价
+答案：C
+
+68. 《关于加快建设全国统一电力市场体系的指导意见》（发改体改[2022]118号）提出，到（ ）年，全国统一电力市场体系基本建成。
+A. 2025
+B. 2027
+C. 2030
+D. 2035
+答案：C
+
+69. 中长期市场按照（ ）价格进行结算。
+A. 中长期合约
+B. 实际电量
+C. 合约约定
+D. 固定
+答案：A
+
+70. 中长期交易结算中，非现货模式下的结算周期为：（ ）。
+A. 按年结算
+B. 按月结算
+C. 按周结算
+D. 按日结算
+答案：B
+
+71. 在现货模式下，电力批发市场的结算模式为：（ ）。
+A. 日清月结
+B. 月清月结
+C. 日清日结
+D. 周清月结
+答案：A
+
+72. （ ）指与发电企业电能产量有直接关系的费用，随着电能产量的变化而变化。
+A. 固定成本
+B. 变动成本
+C. 启动成本
+D. 机会成本
+答案：B
+
+73. （ ）指发电企业为提供辅助服务而减少的电量收入或增加的收益亏损，并不是发电企业实际发生的成本。
+A. 固定成本
+B. 变动成本
+C. 启动成本
+D. 机会成本
+答案：D
+
+74. 停机时间10小时以内的燃煤机组的启动工况为（ ）。
+A. 冷启动
+B. 热启动
+C. 启动
+D. 冷备用
+答案：B
+
+75. 完全竞争的电力市场下，交易员选择按（ ）报价是市场各参与者的最佳竞价策略。
+A. 平均总成本
+B. 平均固定成本
+C. 边际成本
+D. 变动成本
+答案：C
+
+76. 在市场均衡分析中，（ ）数据项用于确定电力市场的供需平衡点。
+A. 发电厂的边际成本
+B. 系统负荷与发电报价的交点
+C. 电网的损耗率
+D. 用户的用电偏好
+答案：B
+
+77. 已参与市场交易、改为电网企业代理购电的用户，其价格按电网企业代理其他用户购电价格的（ ）倍执行。
+A. 1
+B. 1.5
+C. 2
+D. 2.5
+答案：B
+
+78. 电力现货市场下的售电公司，在批发市场中通过中长期和现货市场获取电能，在零售市场中将电能出售给电力用户，零售市场与中长期市场的电量偏差以（ ）价格进行结算。
+A. 中长期
+B. 现货
+C. 零售
+D. 批发
+答案：B
+
+79. 输配电价是指____提供接入系统、联网、电能输送和销售服务价格的总称，它是电力价格链的中游环节，具有连接发电侧和售电侧的桥梁作用。
+A. 电网经营企业
+B. 国家电网
+C. 售电公司
+D. 代理机构
+答案：A
+
+80. 售电公司需要对日前市场和（ ）价格关系进行预判，以制定相应的申报策略，规避价格波动风险及获取现货市场价差收益。
+A. 中长期市场
+B. 日前市场
+C. 实时市场
+D. 辅助服务市场
+答案：C
+
+81. （ ）指设置交易报价提交截止时间，电力交易平台汇总市场主体提交的交易申报信息，按照市场规则进行统一的市场出清，发布市场出清结果。
+A. 集中竞价交易
+B. 滚动撮合交易
+C. 挂牌交易
+D. 双边协商
+答案：A
+`;
+
+    // 多选题原始文本（36 题）
+    const rawMultiText = `
+1. 从国际经验来看，在日前申报结束后，电力调度机构根据机组申报信息，综合考虑（ ）等因素，采用SCUC和SCED出清算法进行优化计算并通过日前安全校核后，编制形成日前预调度计划。
+A. 系统负荷预测变化
+B. 清洁能源消纳
+C. 电网安全约束
+D. 运行日机组组合
+E. 机组出力计划
+答案：ABC
+
+2. 从我国电力市场体系构成上看，它既包括（ ）。
+A. 商品市场
+B. 服务市场
+C. 批发市场
+D. 零售市场
+E. 实物市场
+F. 金融市场
+答案：ABCDEF
+
+3. 当前电力现货市场的主要组织保障包括市场监管机构和市场运营机构。常见的电力市场监管机构包括（ ）。
+A. 国家能源局派出机构
+B. 各级电力交易机构
+C. 地方政府电力管理部门
+D. 电力市场管理委员会
+E. 各级电网调度机构
+答案：ACD
+
+4. 当前电力现货市场的主要组织保障包括市场监管机构和市场运营机构。常见的电力市场运营机构包括（ ）。
+A. 国家能源局派出机构
+B. 各级电力交易机构
+C. 地方政府电力管理部门
+D. 电力市场管理委员会
+E. 各级电网调度机构
+答案：BE
+
+5. 电力现货市场的运营组织，从市场组织来看， （ ）负责签订和履行市场交易合同。
+A. 交易机构
+B. 调度机构
+C. 发电企业
+D. 售电公司
+E. 电力用户
+答案：CDE
+
+6. 省间、省内市场采取“分层申报、协调出清”模式。首先省内依据省间送受电预计划以及本网运行实际，形成省内开机方式、发电计划的预安排，在此基础上组织省间现货交易。省间交易形成的量、价等结果作为省内交易的边界，省内交易在此基础上开展。为保证市场在时序上的良好衔接，建议省间现货市场开展（ ）。
+A. 中长期交易
+B. 日前交易
+C. 日内交易
+D. 实时交易
+答案：BC
+
+7. 省间、省内市场采取“分层申报、协调出清”模式。首先省内依据省间送受电预计划以及本网运行实际，形成省内开机方式、发电计划的预安排，在此基础上组织省间现货交易。省间交易形成的量、价等结果作为省内交易的边界，省内交易在此基础上开展。为保证市场在时序上的良好衔接，建议省内现货市场开展（ ）。
+A. 中长期交易
+B. 日前交易
+C. 日内交易
+D. 实时交易
+答案：BD
+
+8. 完善的市场规则对电力现货市场的发展具有全面和直接的影响，其（ ）、结算和考核机制等的设计，都直接影响市场竞争性环境。
+A. 报价机制
+B. 市场出清机制
+C. 定价机制
+D. 持仓机制
+答案：ABC
+
+9. 由于电力现货市场组织模式的不同，电力现货市场下的实时交易机制可以分为（ ）两类。
+A. 实时市场
+B. 实时平衡市场
+C. 日内市场
+D. 中长期市场
+答案：AB
+
+10. 《关于电力交易机构组建和规范运行的实施意见》明确提出，“为维护市场的公平、公正、公开，保障市场主体的合法权益，充分体现各方意愿，可建立由（ ）等组成的市场管理委员会”。
+A. 电网企业
+B. 发电厂商
+C. 售电商
+D. 电力用户
+答案：ABCD
+
+11. 《关于深化电力现货市场建设试点工作的意见》（发改办能源规[2019]828号）指出，根据（ ），确定用户参与现货市场的方式。
+A. 市场发育程度
+B. 市场主体成熟度
+C. 计量设施情况
+D. 交易机构分布
+答案：ABC
+
+12. 2015年11月，国家发展改革委、国家能源局印发9号文配套文件《关于有序放开发用电计划的实施意见》，提出通过建立优先购电制度保障无议价能力的用户用电，通过（ ），逐步放开其他的发用电计划。
+A. 建立优先发电制度保障清洁能源发电
+B. 调节性电源发电优先上网
+C. 通过直接交易、电力市场等市场化交易方式
+D. 跨省跨区政府间协议
+答案：ABC
+
+13. 2018年国家发展改革委、国家能源局印发《关于积极推进电力市场化交易进一步完善交易机制的通知》（发改运行[2018]1027号），提出2018年放开（ ）等4个行业电力用户发用电计划，全电量参与交易，进一步扩大交易规模，完善交易机制，形成新的改革突破口和着力点。
+A. 煤炭
+B. 钢铁
+C. 有色
+D. 化工
+E. 建材
+答案：ABCE
+
+14. 操纵市场的行为主要包括（ ）。
+A. 经济持留
+B. 容量持留
+C. 联合串谋
+D. 机组检修
+答案：ABC
+
+15. 从现货市场规则制定的内容上讲，电力市场规则体系主要包括（ ）等。
+A. 市场准入退出规则
+B. 市场交易规则
+C. 市场结算规则
+D. 信息公开规则
+E. 市场监管及风险防范规则
+答案：ABCDE
+
+16. 电力现货市场的显著特征是（ ）。
+A. 特定的交易平台集中交易
+B. 具有实物交易的属性
+C. 交易周期要尽可能短
+D. 交易与交割是分别完成的
+E. 交易和交割是同时完成的
+答案：ABCD
+
+17. 电力现货市场交易品种，按照交易时间的维度，电能量批发市场按其交易周期长短，通常可分为（ ）。
+A. 电力现货市场
+B. 电能量中长期市场
+C. 电能量分时交易市场
+答案：AB
+
+18. 电力现货市场交易品种，从交易范围看，我国电力现货市场由（ ）构成。
+A. 省间现货市场
+B. 省内现货市场
+C. 区域现货市场
+D. 全国统一市场
+答案：AB
+
+19. 电力中长期市场指符合准入条件的（ ）等市场主体，通过双边协商、集中交易等市场化方式，开展的多年、年、季、月、周、多日等电力批发交易。
+A. 发电厂商
+B. 电力用户
+C. 售电公司
+D. 独立辅助服务提供主体
+答案：ABCD
+
+20. 机组组合（unit commitment, UC）指在一定的调度周期内，以系统成本最小为目标安排机组启停机和发电计划，实现与预测负荷的平衡并满足一定的约束条件和备用要求。其中系统成本包括发电机组的（ ）。
+A. 启动成本
+B. 停机成本
+C. 运行成本
+D. 折旧成本
+答案：ABC
+
+21. 基于节点电价的用户侧需求响应能够（ ）的可能性，并且能够实现与电网间的积极互动，是实现电力市场充分竞争、建设能源互联网的核心与关键。
+A. 实现用电优化
+B. 降低峰谷差
+C. 增加新能源消纳
+D. 减少弃风弃光
+答案：ABCD
+
+22. 建立健全电力现货市场运营机制包括（ ）等方面。
+A. 有序引导用电侧参与现货市场报价
+B. 建立促进清洁能源消纳的现货交易机制
+C. 合理选择现货市场价格形成机制
+D. 科学设定现货市场限价
+答案：ABCD
+
+23. 建立完善电力现货市场配套机制包括（ ）等方面。
+A. 建立与现货市场衔接的用电侧电价调整机制
+B. 完善与现货市场配套的输配电价机制
+C. 提高电力系统长期供应保障能力
+D. 加强电力市场监管
+E. 开展现货市场运营绩效评估
+答案：ABCDE
+
+24. 尽管现货市场建设已取得突破性进展，但也暴露出（ ）等深层次问题，需要在下一步的市场建设中予以研究解决。
+A. 计划与市场统筹
+B. 省间与省内市场衔接
+C. 新能源市场机制
+D. 电能量与辅助服务
+答案：ABC
+
+25. 培育和发展（ ）的电力市场体系，是我国电力体制改革的目标取向。
+A. 统一
+B. 开放
+C. 竞争
+D. 有序
+答案：ABCD
+
+26. 强化提升电力现货市场运营能力包括（ ）等方面。
+A. 建立健全现货市场运营工作制度
+B. 提高调度机构的组织和制度保障水平
+C. 加强电力系统运行管理
+D. 健全市场信息披露机制
+答案：ABCD
+
+27. 完整的电力市场通常由多个部分（子市场）共同构成，各子市场的集合即为电力市场体系。每个细分市场因其（ ）不同而彼此独立又相互关联。
+A. 市场构架
+B. 市场主体
+C. 交易对象
+D. 交易类型
+E. 价格形成机制
+答案：ABCDE
+
+28. 我国发用电计划主要经历了（ ）等阶段。
+A. 全部为计划电量（2002年以前）
+B. 放开大用户直购电
+C. 逐步放开发用电计划
+D. 放开煤炭钢铁有色和建材四大行业用电计划
+E. 全面放开经营性电力用户用电计划
+答案：ABCDE
+
+29. 现货市场的出清机制是基于（ ），采用安全约束机组组合、安全约束经济调度程序进行优化计算，出清得到日前市场交易结果。
+A. 市场成员申报信息
+B. 电网运行边界条件
+C. 必开必停机组
+答案：AB
+
+30. 虚拟电厂是将（ ）有机结合，通过配套的调控技术、通信技术实现各类分布式能源整合调控的载体，以作为一个特殊电厂参与电力市场和电网运行。
+A. 分布式发电机组
+B. 可控负荷
+C. 分布式储能设施
+D. 集中式光伏
+答案：ABC
+
+31. 影响电力现货市场的出清价格的因素包括（ ）等。
+A. 发电厂电量成本
+B. 发电厂市场力
+C. 输电阻塞
+D. 市场供需
+答案：ABCD
+
+32. 在现货市场中，因（ ），部分发电机组在某些时段必须并网发电，这类机组称为必开机组。
+A. 电网安全约束
+B. 民生供热保障
+C. 政府要求
+D. 市场主体申请
+答案：ABC
+
+33. 作为我国省间市场的探索试点，跨区域省间富余可再生能源电力现货市场的运行为省间现货市场的建设积累了宝贵经验，具体包括（ ）。
+A. 起到了示范带头作用
+B. 完善了电力市场交易体系
+C. 缓解了可再生能源消纳矛盾
+D. 提高了跨区通道的利用率
+E. 促进了电力市场交易机制和技术的进步
+F. 培养了大批电力市场领域的专业技术人才
+答案：ABCDEF
+
+34. 作为现货市场的运营机构，调度机构肩负着（ ）等重要职责。
+A. 保障电网稳定运行
+B. 保障电力安全供应
+C. 促进清洁能源消纳
+D. 维持市场有序运行
+答案：ABCD
+
+35. 售电公司中长期偏差考核费用计算需要基于以下哪些规则参数？（ ）。
+A. 中长期偏差考核回收基数
+B. 中长期偏差考核允许上下限
+C. 中长期偏差考核回收系数
+D. 日前偏差考核回收系数
+答案：ABC
+
+36. 价格联动套餐可以与什么价格联动？（ ）。
+A. 市场整体批发均价
+B. 售电公司批发均价
+C. 发电侧节点电价
+D. 中长期结算参考点现货价格
+答案：AB
+`;
+
+    // 判断题原始文本（49 题）
+    const rawJudgeText = `
+1. 保障电力系统安全稳定运行是全体市场成员共同利益之所在。从保证电网安全运行的角度考虑，调度计划包含电力市场交易结果，但最终下发的计划一定是依据当前电网运行条件。
+答案：正确
+
+2. 必开机组由调度机构根据一定的原则进行设置，可以在市场出清前进行标记，也可以在市场出清后进行标记。
+答案：错误
+
+3. 必开机组在必开时段内的机组状态为开机，不参与优化；必开最小出力优先出清。若调度机构未指定必开机组的必开最小出力，则必开最小出力为该台机组的最小稳定技术出力。必开最小出力之上的发电能力根据发电机组的电能量报价参与优化出清。
+答案：正确
+
+4. 边际机组形成率是指某个电厂形成边际机组的时段占整个竞价时段的比例。当某个电厂边际机组形成率远远高于其年发电量占所有竞价电厂年发电量的比例时，可以初步判断这个电厂在市场中具有市场力，可能存在操纵市场价格的风险。
+答案：正确
+
+5. 变动成本即燃料成本，包括空载燃料成本和边际燃料成本，空载燃料成本是指发电机维持同步转速、输出电功率为零所需要消耗的燃料成本，边际燃料成本是指发电机组在一定出力水平增加单位出力所需增加的燃料成本。
+答案：正确
+
+6. 从电力现货市场建设的经验来看，大多数国家和地区都选择了可再生能源发电差别进入电力市场，并且按照“价补分离”的原则，将可再生能源的电价补贴与其在电力市场的电源行为区别开来。
+答案：错误
+
+7. 从申报形式和是否有定价权来讲，用户侧参与电能批发市场主要由两种形式：报量报价和不报量不报价。
+答案：错误
+
+8. 电力调度与市场交易职能是电力市场运行必不可少的重要部分，其中实时交易与调度密不可分，调度可以包容市场交易，但交易代替不了统一调度，这不仅在理论上而且在各国实践上也已经得到了充分的证明。
+答案：正确
+
+9. 电力金融合约仅约定财务交割责任，不作为市场主体发用电计划制定的依据。合约电能通过现货市场交割，合约电量仍然参与现货竞价，所以金融合约并不影响现货市场的竞争。
+答案：正确
+
+10. 电力市场的交易结果是发电企业、市场运营机构、电力用户依规达成的“合同”，“合同”的内容需要依靠调度计划指令来执行，而这份“合同”的有效履行不需要所有市场主体严格遵守调度纪律来完成。
+答案：错误
+
+11. 电力市场交易结果执行环节是由调度机构负责落实。电力市场是通过市场机制形成发电计划和电价，可以取代整个电网的运行调度。
+答案：错误
+
+12. 电力现货市场出清价格机制选择系统边际电价、分区边际电价或节点边际电价，主要考虑电网阻塞情况。
+答案：正确
+
+13. 电力现货市场的目标是在一定的政治、经济、技术条件下实现电网运行和市场运营的效率、公平、环保、安全等目标。
+答案：正确
+
+14. 电力现货市场下的售电公司，在批发市场中通过中长期市场和现货市场获取电能，在零售市场中将电能出售给电力用户，零售市场与中长期市场的电量偏差以现货价格进行结算。
+答案：正确
+
+15. 电网企业按照政府核定的输配电价收取过网费，仍以上网电价和销售电价价差作为主要收入来源。
+答案：错误
+
+16. 调度机构肩负着保障电网安全运行和现货市场有序运营的双重职责。电力现货市场的建设对电网安全运行提出了更高要求，较传统模式相比，市场机制一定程度上削弱了调度风险管控的手段，使调度保障电网安全的难度增加。
+答案：正确
+
+17. 调度机构在事前信息发布中需包含必开机组的计划安排，可以不明确相应的必开时段。
+答案：错误
+
+18. 发用电计划作为年度电力电量平衡方案，对保障电力供需平衡、电网安全稳定运行发挥了重要作用，随着市场化进程推进，实现竞价上网客观上要求发用电计划放开。
+答案：正确
+
+19. 可用输电容量指电网在已有交易或合同基础上可进一步用于交易的剩余输电容量。一般来说，可用传输容量指两个区域之间的总传输容量在考虑传输裕度、扣减通道已安排的交易电量后还剩余的传输容量。
+答案：正确
+
+20. 批发市场和零售市场的结算规则独立设计，批发市场由交易机构负责出具结算依据，零售市场探索由具备能力和有意愿的售电商出具结算依据。
+答案：正确
+
+21. 全电量竞价模式的特点在于发电侧市场主体各机组所发电量全部参与现货市场竞价，中长期交易电量、优先发电及基数电量以差价合约的方式结算。
+答案：正确
+
+22. 若某机组装机容量较大，或者该机组对应市场成员的市场份额较大。在发电侧申报曲线相对稳定的情况下，机组的装机容量越大，或者机组对应市场成员的市场份额较大，其与负荷侧申报曲线相交的概率越大，这会导致其经常性成为边际机组，具有一定的市场垄断地位，进而具有操纵市场价格的能力。
+答案：正确
+
+23. 申报充足率是市场成员需求量之和与申报的最大供给量之和的比值，反映了市场供给的富余程度，从一个侧面反映了市场的竞争力度。
+答案：错误
+
+24. 实时平衡机制的主要功能是维持系统安全，其特点是在中长期交易物理执行基础上，市场成员申报增减出力报价信息，调度部门根据增减出力报价、系统不平衡功率和阻塞情况，以购电费用最小为目标，调整市场成员发用电计划。
+答案：正确
+
+25. 市场管理委员会实行按市场主体类别投票表决等合理议事机制，审议结果经审定后执行，国家能源局及其派出机构和政府有关部门不可以否决。
+答案：错误
+
+26. 市场环境下各市场主体不需要坚持统一调度，遵守调度纪律。
+答案：错误
+
+27. 市场结构平衡费用主要指在市场和计划双轨制下，由于非市场化用户用电量与政府定价上网电量出现偏差，导致电网企业购售价差收入出现的偏差费用。
+答案：正确
+
+28. 市场用户只有完成注册才可以参与电力批发市场；市场用户根据其注册的市场主体类型，享有相应的权利，承担相应的义务。市场用户在注册时应签署入市协议，应遵守入市协议相关要求，遵守市场规则；市场用户也具有自愿注销和终止的权利。
+答案：正确
+
+29. 输电阻塞是指输电系统由于本身网络的容量限制不能满足所希望的输电计划的状态。
+答案：正确
+
+30. 我国电力现货市场下，网损成本不包含在输配电价成本中。
+答案：错误
+
+31. 我国能源资源与负荷分布不均衡的国情以及发展可再生能源的要求，客观上适合以省间市场起步。
+答案：错误
+
+32. 我国省内电力现货市场根据时间维度划分为日前市场、日内市场和实时市场，以发电成本最小为目标，优化省内资源配置，确定省内机组组合和发电计划。
+答案：正确
+
+33. 我国选择以省为单位起步，是现货市场现阶段建设的理性选择，能够积极稳妥地推进现货市场建设，能够有效促进现货市场的发展和市场规模逐步扩大，交易品种逐渐丰富，市场规则和交易机制不断完善。
+答案：正确
+
+34. 现货市场出清以运行成本最低（或社会福利最大）为目标进行优化出清计算，在没有发生线路或者常规断面受阻的情况下，系统中各个母线的下一兆瓦的负荷需求是由申报价格最低的机组来提供的，这种情况下，系统电能价格等于边际机组的申报价，且所有节点的电价一致。
+答案：正确
+
+35. 现货市场规则设计应做到批发市场和零售市场相对统一。
+答案：错误
+
+36. 现货市场环境下的调度应急机制，是指在特定的情况下，由政府部门授权电力调度控制中心进行的对部分安全审查市场交易的临时管制。
+答案：正确
+
+37. 现货市场环境下的机组组合应考虑市场主体报价已成为一种共识。
+答案：错误
+
+38. 现货市场建设有其普遍性规律，虽然我国各地区电源结构、电网特性、电力供需水平、经济发展水平、市场化意识等多方面都有或多或少的差异，在现货市场建设中，必须充分考虑本地区的实际情况，可以照抄他国或他省规则。
+答案：错误
+
+39. 现货市场中市场成员的逐利性和投机性将会把电网运行推向安全边界，电网运行安全边界将被压缩。
+答案：正确
+
+40. 虚拟电厂和微电网是目前实现分布式电源并网最具创造力和吸引力的两种形式。
+答案：正确
+
+41. 优先购电是为居民、农业、重要公用事业和公益性服务等用电提供保障性服务，确保民生用电安全可靠的必要措施。
+答案：正确
+
+42. 在电力市场环境下，各个市场主体设备检修只影响自己的收益，不影响其他市场主体。
+答案：错误
+
+43. 在电力市场中，差价合约不涉及实际电力的交割，是一种提前确定收益的金融工具，买卖双方可以商定商品的履约价格和交易数量。
+答案：正确
+
+44. 在电力现货市场建设实践中，调度机构还承担电力现货市场技术支持系统建设、运行和维护；依规在特定情况下进行市场干预或市场中止等职责。
+答案：正确
+
+45. 在现货市场出清时，必开机组在必开时段内的机组状态为开机，必开最小出力优先出清。
+答案：正确
+
+46. 在现货市场上，难以确定具体的消费者和具体的供给者之间的关系。发电厂商所售的电流向了哪些电力负荷，消费者消耗的电力来自哪家发电厂商都是难以明确的，并不以经济合同为依据。
+答案：正确
+
+47. 在现货市场中，出现负节点电价表明市场中供大于求或电网局部存在严重阻塞，意味着发电机组为保持运转不得不向用户支付费用以鼓励用电。
+答案：正确
+
+48. 中长期市场和零售市场都以双边合约的形式确定，其风险较小，因此售电公司的主要风险来自现货市场，更具体来说，来自现货电价的波动。
+答案：正确
+
+49. 为安排次日（或未来24h）发用电计划而组织的日前电力交易市场，为实现日内发用电计划滚动调整而组织的日内电力交易市场以及为保证电力供需的即时平衡而组织的中长期电力交易市场，通常被视为电力现货市场。
+答案：错误
+`;
+
+    // 答案 key（单选 / 多选 / 判断）
+    const singleKeyString =
+      "1A 2D 3A 4A 5B 6A 7D 8A 9D 10B 11C 12B 13A 14A 15B 16A 17B 18A 19B 20A 21B 22A 23B 24B 25B 26C 27D 28B 29C 30B 31D 32D 33C 34C 35B 36C 37A 38B 39B 40D 41C 42C 43C 44C 45B 46B 47B 48C 49C 50B 51B 52B 53B 54B 55B 56B 57C 58B 59C 60B 61C 62D 63B 64D 65A 66B 67C 68C 69A 70B 71A 72B 73D 74B 75C 76B 77B 78B 79A 80C 81A";
+
+    const multiKeyString =
+      "1ABC 2ABCDEF 3ACD 4BE 5CDE 6BC 7BD 8ABC 9AB 10ABCD 11ABC 12ABC 13ABCE 14ABC 15ABCDE 16ABCD 17AB 18AB 19ABCD 20ABC 21ABCD 22ABCD 23ABCDE 24ABC 25ABCD 26ABCD 27ABCDE 28ABCDE 29AB 30ABC 31ABCD 32ABC 33ABCDEF 34ABCD 35ABC 36AB";
+
+    const judgeKeyString =
+      "1T 2F 3T 4T 5T 6F 7F 8T 9T 10F 11F 12T 13T 14T 15F 16T 17F 18T 19T 20T 21T 22T 23F 24T 25F 26F 27T 28T 29T 30F 31F 32T 33T 34T 35F 36T 37F 38F 39T 40T 41T 42T 43T 44T 45T 46T 47T 48T 49F";
+
+    // ======================= 解析工具函数 =======================
+
+    function parseSingleAnswers(keyString) {
+      const map = {};
+      keyString
+        .trim()
+        .split(/\s+/)
+        .forEach((pair) => {
+          const m = pair.match(/(\d+)([A-Z])/);
+          if (m) {
+            map[parseInt(m[1], 10)] = m[2];
+          }
+        });
+      return map;
+    }
+
+    function parseMultiAnswers(keyString) {
+      const map = {};
+      keyString
+        .trim()
+        .split(/\s+/)
+        .forEach((pair) => {
+          const m = pair.match(/(\d+)([A-Z]+)/);
+          if (m) {
+            map[parseInt(m[1], 10)] = m[2];
+          }
+        });
+      return map;
+    }
+
+    function parseJudgeAnswers(keyString) {
+      const map = {};
+      keyString
+        .trim()
+        .split(/\s+/)
+        .forEach((pair) => {
+          const m = pair.match(/(\d+)([TF])/);
+          if (m) {
+            map[parseInt(m[1], 10)] = m[2];
+          }
+        });
+      return map;
+    }
+
+    function parseSingleQuestions(raw, keyString) {
+      const answers = parseSingleAnswers(keyString);
+      const blocks = raw.trim().split(/\n(?=\d+\.\s)/);
+      const questions = [];
+
+      blocks.forEach((block) => {
+        const lines = block
+          .split("\n")
+          .map((l) => l.trim())
+          .filter(Boolean);
+        if (!lines.length) return;
+        const firstLine = lines[0];
+        const m = firstLine.match(/^(\d+)\.\s*(.*)$/);
+        if (!m) return;
+        const id = parseInt(m[1], 10);
+        const questionLines = [];
+        if (m[2]) questionLines.push(m[2]);
+
+        for (let i = 1; i < lines.length; i++) {
+          const line = lines[i];
+          if (/^[A-F]\./.test(line) || /^答案[:：]/.test(line)) continue;
+          questionLines.push(line);
+        }
+        const text = questionLines.join(" ");
+
+        const optionMap = {};
+        lines.forEach((line) => {
+          const om = line.match(/^([A-F])\.\s*(.*)$/);
+          if (om) {
+            optionMap[om[1]] = om[2];
+          }
+        });
+        const letters = Object.keys(optionMap).sort();
+        const options = letters.map((letter) => optionMap[letter]);
+        const answer = answers[id];
+
+        questions.push({ id, text, options, answer });
+      });
+
+      questions.sort((a, b) => a.id - b.id);
+      return questions;
+    }
+
+    function parseMultiQuestions(raw, keyString) {
+      const answers = parseMultiAnswers(keyString);
+      const blocks = raw.trim().split(/\n(?=\d+\.\s)/);
+      const questions = [];
+
+      blocks.forEach((block) => {
+        const lines = block
+          .split("\n")
+          .map((l) => l.trim())
+          .filter(Boolean);
+        if (!lines.length) return;
+        const firstLine = lines[0];
+        const m = firstLine.match(/^(\d+)\.\s*(.*)$/);
+        if (!m) return;
+        const id = parseInt(m[1], 10);
+        const questionLines = [];
+        if (m[2]) questionLines.push(m[2]);
+        for (let i = 1; i < lines.length; i++) {
+          const line = lines[i];
+          if (/^[A-F]\./.test(line) || /^答案[:：]/.test(line)) continue;
+          questionLines.push(line);
+        }
+        const text = questionLines.join(" ");
+        const optionMap = {};
+        lines.forEach((line) => {
+          const om = line.match(/^([A-F])\.\s*(.*)$/);
+          if (om) {
+            optionMap[om[1]] = om[2];
+          }
+        });
+        const letters = Object.keys(optionMap).sort();
+        const options = letters.map((letter) => optionMap[letter]);
+        const answer = answers[id]; // e.g. "ABC"
+        questions.push({ id, text, options, answer });
+      });
+
+      questions.sort((a, b) => a.id - b.id);
+      return questions;
+    }
+
+    function parseJudgeQuestions(raw, keyString) {
+      const answers = parseJudgeAnswers(keyString);
+      const blocks = raw.trim().split(/\n(?=\d+\.\s)/);
+      const questions = [];
+
+      blocks.forEach((block) => {
+        const lines = block
+          .split("\n")
+          .map((l) => l.trim())
+          .filter(Boolean);
+        if (!lines.length) return;
+        const firstLine = lines[0];
+        const m = firstLine.match(/^(\d+)\.\s*(.*)$/);
+        if (!m) return;
+        const id = parseInt(m[1], 10);
+        let text = m[2];
+        for (let i = 1; i < lines.length; i++) {
+          const line = lines[i];
+          if (/^答案[:：]/.test(line)) continue;
+          text += " " + line;
+        }
+        const ansChar = answers[id]; // 'T' or 'F'
+        questions.push({ id, text, answer: ansChar });
+      });
+
+      questions.sort((a, b) => a.id - b.id);
+      return questions;
+    }
+
+    // ======================= 构建题库数据结构 =======================
+
+    const singleQuestions = parseSingleQuestions(rawSingleText, singleKeyString);
+    const multiQuestions = parseMultiQuestions(rawMultiText, multiKeyString);
+    const judgeQuestions = parseJudgeQuestions(rawJudgeText, judgeKeyString);
+
+    const modules = {
+      single: {
+        id: "single",
+        name: "单选题",
+        questions: singleQuestions,
+        userState: singleQuestions.map(() => ({ answered: false, correct: null })),
+      },
+      multi: {
+        id: "multi",
+        name: "多选题",
+        questions: multiQuestions,
+        userState: multiQuestions.map(() => ({ answered: false, correct: null })),
+      },
+      judge: {
+        id: "judge",
+        name: "判断题",
+        questions: judgeQuestions,
+        userState: judgeQuestions.map(() => ({ answered: false, correct: null })),
+      },
+    };
+
+    let currentModuleId = "single";
+    let currentIndex = 0;
+
+    // ======================= UI 操作函数 =======================
+
+    function updateProgress() {
+      const cfg = modules[currentModuleId];
+      if (!cfg) return;
+      const total = cfg.questions.length;
+      const answered = cfg.userState.filter((s) => s && s.answered).length;
+      const correct = cfg.userState.filter((s) => s && s.correct).length;
+      const rate = answered ? Math.round((correct / answered) * 100) : 0;
+
+      const text = `当前模块：${cfg.name}｜已作答：${answered}/${total}，其中答对 ${correct} 题，正确率 ${rate}%`;
+      const progressText = document.getElementById("progress-text");
+      const barInner = document.getElementById("progress-bar-inner");
+      progressText.textContent = text;
+      barInner.style.width = `${(answered / total) * 100}%`;
+    }
+
+    function showFeedback(isCorrect, message) {
+      const feedback = document.getElementById("feedback");
+      feedback.textContent = message;
+      feedback.className = "feedback " + (isCorrect ? "feedback-correct" : "feedback-wrong");
+    }
+
+    function bindOptionEvents() {
+      const optionButtons = document.querySelectorAll(".option-btn");
+      if (currentModuleId === "single") {
+        optionButtons.forEach((btn) => {
+          btn.addEventListener("click", () => {
+            const letter = btn.dataset.letter;
+            handleSingleChoice(letter);
+          });
+        });
+      } else if (currentModuleId === "multi") {
+        optionButtons.forEach((btn) => {
+          btn.addEventListener("click", () => {
+            const letter = btn.dataset.letter;
+            handleMultiChoice(letter);
+          });
+        });
+      } else if (currentModuleId === "judge") {
+        optionButtons.forEach((btn) => {
+          btn.addEventListener("click", () => {
+            const value = btn.dataset.value;
+            handleJudgeChoice(value);
+          });
+        });
+      }
+    }
+
+    function renderQuestion() {
+      const cfg = modules[currentModuleId];
+      const q = cfg.questions[currentIndex];
+
+      const moduleLabel = document.getElementById("module-label");
+      const questionIndex = document.getElementById("question-index");
+      const questionText = document.getElementById("question-text");
+      const multiTip = document.getElementById("multi-tip");
+      const optionsContainer = document.getElementById("options");
+      const feedback = document.getElementById("feedback");
+      const prevBtn = document.getElementById("prevBtn");
+      const nextBtn = document.getElementById("nextBtn");
+      const confirmBtn = document.getElementById("confirmBtn");
+
+      moduleLabel.textContent = cfg.name;
+      questionIndex.textContent = `第 ${q.id} 题（本模块第 ${currentIndex + 1} 题 / 共 ${cfg.questions.length} 题）`;
+      questionText.textContent = q.text;
+      feedback.textContent = "请选择答案。";
+      feedback.className = "feedback";
+      optionsContainer.innerHTML = "";
+      multiTip.textContent = "";
+
+      if (currentModuleId === "single" || currentModuleId === "multi") {
+        if (currentModuleId === "multi") {
+          multiTip.textContent = "此题为多选题，可多选；选完后点击中间的「确定答案」按钮判题。";
+        }
+        q.options.forEach((optText, idx) => {
+          const letter = String.fromCharCode(65 + idx);
+          const btn = document.createElement("button");
+          btn.className = "option-btn";
+          btn.dataset.letter = letter;
+          btn.innerHTML = `<span class="option-letter">${letter}</span><span class="option-text">${optText}</span>`;
+          optionsContainer.appendChild(btn);
+        });
+      } else if (currentModuleId === "judge") {
+        multiTip.textContent = "此题为判断题，请选择“正确”或“错误”。";
+        const optList = [
+          { label: "正确", value: "T" },
+          { label: "错误", value: "F" },
+        ];
+        optList.forEach((opt) => {
+          const btn = document.createElement("button");
+          btn.className = "option-btn";
+          btn.dataset.value = opt.value;
+          btn.textContent = opt.label;
+          optionsContainer.appendChild(btn);
+        });
+      }
+
+      prevBtn.disabled = currentIndex === 0;
+      nextBtn.disabled = currentIndex === cfg.questions.length - 1;
+
+      // 多选题才显示“确定答案”按钮
+      if (currentModuleId === "multi") {
+        confirmBtn.classList.remove("hidden");
+      } else {
+        confirmBtn.classList.add("hidden");
+      }
+
+      bindOptionEvents();
+    }
+
+    function handleSingleChoice(letter) {
+      const cfg = modules[currentModuleId];
+      const q = cfg.questions[currentIndex];
+      const answer = q.answer;
+      const optionButtons = document.querySelectorAll(".option-btn");
+
+      optionButtons.forEach((btn) => {
+        btn.classList.remove("correct", "wrong", "selected");
+      });
+
+      let selectedBtn = null;
+      optionButtons.forEach((btn) => {
+        if (btn.dataset.letter === letter) {
+          selectedBtn = btn;
+        }
+      });
+      if (selectedBtn) {
+        selectedBtn.classList.add("selected");
+      }
+
+      const isCorrect = letter === answer;
+      if (isCorrect) {
+        if (selectedBtn) selectedBtn.classList.add("correct");
+        showFeedback(true, "回答正确！");
+      } else {
+        if (selectedBtn) selectedBtn.classList.add("wrong");
+        optionButtons.forEach((btn) => {
+          if (btn.dataset.letter === answer) {
+            btn.classList.add("correct");
+          }
+        });
+        showFeedback(false, `回答错误，正确答案是 ${answer}。`);
+      }
+
+      cfg.userState[currentIndex] = { answered: true, correct: isCorrect };
+      updateProgress();
+    }
+
+    // 多选题：点击选项只负责“选择/取消”，不判题
+    function handleMultiChoice(letter) {
+      const cfg = modules[currentModuleId];
+      const q = cfg.questions[currentIndex];
+      const optionButtons = document.querySelectorAll(".option-btn");
+      const feedback = document.getElementById("feedback");
+
+      let clickedBtn = null;
+      optionButtons.forEach((btn) => {
+        if (btn.dataset.letter === letter) {
+          clickedBtn = btn;
+        }
+      });
+      if (clickedBtn) {
+        clickedBtn.classList.toggle("selected");
+      }
+
+      // 清除之前的对错标记，仅保留选择状态
+      optionButtons.forEach((btn) => {
+        btn.classList.remove("correct", "wrong");
+      });
+
+      const selectedLetters = Array.from(optionButtons)
+        .filter((btn) => btn.classList.contains("selected"))
+        .map((btn) => btn.dataset.letter)
+        .sort();
+
+      if (selectedLetters.length === 0) {
+        feedback.textContent = "请选择答案。";
+        feedback.className = "feedback";
+      } else {
+        feedback.textContent = `已选择：${selectedLetters.join(", ")}，多选题请点击「确定答案」判题。`;
+        feedback.className = "feedback";
+      }
+    }
+
+    // 多选题：点击“确定答案”后才判题
+    function confirmMultiChoice() {
+      if (currentModuleId !== "multi") return;
+
+      const cfg = modules[currentModuleId];
+      const q = cfg.questions[currentIndex];
+      const answer = q.answer || "";
+      const answerLetters = answer.split("").sort();
+      const optionButtons = document.querySelectorAll(".option-btn");
+      const feedback = document.getElementById("feedback");
+
+      const selectedLetters = Array.from(optionButtons)
+        .filter((btn) => btn.classList.contains("selected"))
+        .map((btn) => btn.dataset.letter)
+        .sort();
+
+      // 没选任何东西就点确定
+      if (selectedLetters.length === 0) {
+        feedback.textContent = "请先选择至少一个选项，再点击「确定答案」。";
+        feedback.className = "feedback feedback-wrong";
+        return;
+      }
+
+      optionButtons.forEach((btn) => {
+        btn.classList.remove("correct", "wrong");
+      });
+
+      const selectedStr = selectedLetters.join("");
+      const answerSorted = answerLetters.join("");
+
+      optionButtons.forEach((btn) => {
+        const l = btn.dataset.letter;
+        if (answerLetters.includes(l)) {
+          btn.classList.add("correct");
+        }
+        if (selectedLetters.includes(l) && !answerLetters.includes(l)) {
+          btn.classList.add("wrong");
+        }
+      });
+
+      const isCorrect = selectedStr === answerSorted;
+      if (isCorrect) {
+        feedback.textContent = "回答正确！";
+        feedback.className = "feedback feedback-correct";
+      } else {
+        feedback.textContent = `回答不完全正确，正确答案是 ${answer}。`;
+        feedback.className = "feedback feedback-wrong";
+      }
+
+      cfg.userState[currentIndex] = { answered: true, correct: isCorrect };
+      updateProgress();
+    }
+
+    function handleJudgeChoice(value) {
+      const cfg = modules[currentModuleId];
+      const q = cfg.questions[currentIndex];
+      const answer = q.answer; // 'T' or 'F'
+      const optionButtons = document.querySelectorAll(".option-btn");
+
+      optionButtons.forEach((btn) => {
+        btn.classList.remove("correct", "wrong", "selected");
+      });
+
+      let isCorrect = value === answer;
+      optionButtons.forEach((btn) => {
+        const v = btn.dataset.value;
+        if (v === value) {
+          btn.classList.add("selected");
+          if (isCorrect) {
+            btn.classList.add("correct");
+          } else {
+            btn.classList.add("wrong");
+          }
+        } else if (v === answer) {
+          btn.classList.add("correct");
+        }
+      });
+
+      const ansText = answer === "T" ? "正确" : "错误";
+      if (isCorrect) {
+        showFeedback(true, "回答正确！");
+      } else {
+        showFeedback(false, `回答错误，正确答案是：${ansText}。`);
+      }
+
+      cfg.userState[currentIndex] = { answered: true, correct: isCorrect };
+      updateProgress();
+    }
+
+    function changeQuestion(delta) {
+      const cfg = modules[currentModuleId];
+      const newIndex = currentIndex + delta;
+      if (newIndex < 0 || newIndex >= cfg.questions.length) return;
+      currentIndex = newIndex;
+      renderQuestion();
+    }
+
+    function handleModuleClick(id) {
+      if (!modules[id]) return;
+      currentModuleId = id;
+      currentIndex = 0;
+
+      const buttons = document.querySelectorAll(".module-btn");
+      buttons.forEach((btn) => {
+        btn.classList.toggle("active", btn.dataset.module === id);
+      });
+
+      const total = modules[id].questions.length;
+      const totalSpan = document.getElementById("total-count");
+      const startInput = document.getElementById("startIndex");
+      totalSpan.textContent = total;
+      startInput.value = 1;
+      startInput.min = 1;
+      startInput.max = total;
+
+      const qa = document.getElementById("question-area");
+      qa.classList.add("hidden");
+
+      const progressText = document.getElementById("progress-text");
+      const barInner = document.getElementById("progress-bar-inner");
+      progressText.textContent = `已选择模块：${modules[id].name}。点击「开始练习」进入答题。`;
+      barInner.style.width = "0%";
+    }
+
+    function handleStart() {
+      const cfg = modules[currentModuleId];
+      const total = cfg.questions.length;
+      const startInput = document.getElementById("startIndex");
+      let idx = parseInt(startInput.value, 10);
+      if (isNaN(idx) || idx < 1) idx = 1;
+      if (idx > total) idx = total;
+      currentIndex = idx - 1;
+      document.getElementById("question-area").classList.remove("hidden");
+      renderQuestion();
+      updateProgress();
+    }
+
+    // ======================= 初始化 =======================
+
+    document.addEventListener("DOMContentLoaded", () => {
+      const moduleButtons = document.querySelectorAll(".module-btn");
+      moduleButtons.forEach((btn) => {
+        btn.addEventListener("click", () => {
+          const id = btn.dataset.module;
+          handleModuleClick(id);
+        });
+      });
+
+      document.getElementById("startBtn").addEventListener("click", handleStart);
+      document.getElementById("prevBtn").addEventListener("click", () => changeQuestion(-1));
+      document.getElementById("nextBtn").addEventListener("click", () => changeQuestion(1));
+
+      const confirmBtn = document.getElementById("confirmBtn");
+      confirmBtn.addEventListener("click", confirmMultiChoice);
+
+      // 默认模块：单选题
+      handleModuleClick("single");
+    });
+  </script>
+</body>
+</html>
